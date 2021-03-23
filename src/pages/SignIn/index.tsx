@@ -1,7 +1,7 @@
 import React, { useCallback, useRef, useContext } from 'react';
 import {FiLogIn, FiMail, FiLock} from 'react-icons/fi';
 
-import {AuthContext} from '../../context/AuthContext'
+import {useAuth} from '../../hooks/AuthContext'
 
 import * as Yup from 'yup';
 
@@ -24,9 +24,7 @@ interface SignFormData {
 const SignIn:React.FC = () => {
   const formRef = useRef<FormHandles>(null);
 
-  const {user, signIn} = useContext(AuthContext);
-
-  console.log(user)
+  const {signIn} = useAuth();
 
   const handleSubmit = useCallback(async (data: SignFormData) => {
     try {
