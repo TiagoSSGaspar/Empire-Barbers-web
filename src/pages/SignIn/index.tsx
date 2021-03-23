@@ -1,7 +1,7 @@
 import React, { useCallback, useRef, useContext } from 'react';
 import {FiLogIn, FiMail, FiLock} from 'react-icons/fi';
 
-import {useAuth} from '../../hooks/AuthContext'
+import {useAuth} from '../../hooks/Auth'
 
 import * as Yup from 'yup';
 
@@ -15,6 +15,7 @@ import Button from '../../components/Button';
 
 import {Container, Content, Background } from './styles';
 import getValidationErrors from '../../utils/getValidationErrors';
+import { useToast } from '../../hooks/Toast';
 
 interface SignFormData {
   email: string;
@@ -25,6 +26,7 @@ const SignIn:React.FC = () => {
   const formRef = useRef<FormHandles>(null);
 
   const {signIn} = useAuth();
+  const {addToast} = useToast();
 
   const handleSubmit = useCallback(async (data: SignFormData) => {
     try {
@@ -37,7 +39,7 @@ const SignIn:React.FC = () => {
       await shema.validate(data,{
         abortEarly: false,
       });
-      signIn({
+      await signIn({
         email: data.email,
         password: data.password
       });
@@ -49,10 +51,10 @@ const SignIn:React.FC = () => {
         formRef.current?.setErrors(errors);
       }
 
-
+      addToast();
 
     }
-  }, [signIn]);
+  }, [signIn, addToast]);
 
   return (
     <Container>
