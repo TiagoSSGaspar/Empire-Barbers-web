@@ -1,5 +1,7 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useContext } from 'react';
 import {FiLogIn, FiMail, FiLock} from 'react-icons/fi';
+
+import {AuthContext} from '../../context/AuthContext'
 
 import * as Yup from 'yup';
 
@@ -14,10 +16,19 @@ import Button from '../../components/Button';
 import {Container, Content, Background } from './styles';
 import getValidationErrors from '../../utils/getValidationErrors';
 
+interface SignFormData {
+  email: string;
+  password: string;
+}
+
 const SignIn:React.FC = () => {
   const formRef = useRef<FormHandles>(null);
 
-  const handleSubmit = useCallback(async (data: Object) => {
+  const {user, signIn} = useContext(AuthContext);
+
+  console.log(user)
+
+  const handleSubmit = useCallback(async (data: SignFormData) => {
     try {
       formRef.current?.setErrors({});
       const shema = Yup.object().shape({
@@ -28,12 +39,16 @@ const SignIn:React.FC = () => {
       await shema.validate(data,{
         abortEarly: false,
       });
+      signIn({
+        email: data.email,
+        password: data.password
+      });
     } catch (error) {
       const errors = getValidationErrors(error);
 
       formRef.current?.setErrors(errors);
     }
-  }, []);
+  }, [signIn]);
 
   return (
     <Container>
