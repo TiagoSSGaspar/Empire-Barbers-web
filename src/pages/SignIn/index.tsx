@@ -1,4 +1,5 @@
 import React, { useCallback, useRef} from 'react';
+import { Link, useHistory } from 'react-router-dom';
 import {FiLogIn, FiMail, FiLock} from 'react-icons/fi';
 
 import {useAuth} from '../../hooks/Auth'
@@ -19,7 +20,6 @@ import getValidationErrors from '../../utils/getValidationErrors';
 
 import { useToast } from '../../hooks/Toast';
 
-import { Link } from 'react-router-dom';
 
 interface SignFormData {
   email: string;
@@ -28,6 +28,7 @@ interface SignFormData {
 
 const SignIn:React.FC = () => {
   const formRef = useRef<FormHandles>(null);
+  const history = useHistory();
 
   const {signIn} = useAuth();
   const {addToast} = useToast();
@@ -47,6 +48,9 @@ const SignIn:React.FC = () => {
         email: data.email,
         password: data.password
       });
+
+      history.push('/dashboard')
+
     } catch (error) {
 
       if(error instanceof Yup.ValidationError) {
@@ -54,7 +58,7 @@ const SignIn:React.FC = () => {
 
         formRef.current?.setErrors(errors);
 
-        return;
+        return
       }
 
       addToast({
@@ -64,7 +68,7 @@ const SignIn:React.FC = () => {
       });
 
     }
-  }, [signIn, addToast]);
+  }, [signIn, addToast, history]);
 
   return (
     <Container>
